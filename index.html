@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MarkPoint Surveys - Registered Land Surveyors in Kenya</title>
+  <meta name="description" content="Professional land surveying, topographic surveys, drone mapping, GIS and title processing services in Kenya." />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+  <style>
+    :root{
+      --primary: #1e40af;
+      --secondary: #0f766e;
+      --accent: #f59e0b;
+      --light: #f9fafb;
+      --dark: #111827;
+      --muted: #6b7280;
+      --header-h: 72px; /* header height used for offsets */
+      --max-width: 1400px;
+      --container-pad: 5%;
+      --radius-lg: 16px;
+      --shadow-lg: 0 10px 30px rgba(0,0,0,0.1);
+      --shadow-focus: 0 6px 18px rgba(30,64,175,0.12);
+    }
+
+    /* Reset / Base */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: Inter, "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial;
+      line-height:1.6;
+      color:#222;
+      background:#fff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+    }
+    img{max-width:100%;display:block;height:auto}
+    a{color:inherit;text-decoration:none}
+    button{font-family:inherit}
+
+    /* Header / Nav */
+    header{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      height:var(--header-h);
+      background:var(--dark);
+      z-index:1200;
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+      display:flex;
+      align-items:center;
+    }
+    .navbar{
+      width:100%;
+      max-width:var(--max-width);
+      margin:0 auto;
+      padding:0 calc(var(--container-pad));
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .logo{color:#fff;font-weight:900;font-size:clamp(1.25rem,3.6vw,1.9rem);letter-spacing:0.2px}
+    .logo span{color:var(--accent)}
+    nav{display:flex;align-items:center;gap:1rem}
+    .menu-toggle{
+      display:none;
+      color:#fff;
+      font-size:1.35rem;
+      background:transparent;
+      border:none;
+      cursor:pointer;
+      padding:8px;
+    }
+
+    /* Nav links */
+    nav ul{
+      display:flex;
+      gap:clamp(1rem,2.5vw,2rem);
+      list-style:none;
+      align-items:center;
+    }
+    nav a{
+      color:#fff;
+      font-weight:600;
+      font-size:clamp(0.95rem,2vw,1.05rem);
+      position:relative;
+      padding:4px 0;
+    }
+    nav a::after{
+      content:'';
+      position:absolute;
+      left:0;
+      bottom:-8px;
+      width:0;
+      height:3px;
+      background:var(--accent);
+      transition:width .25s ease;
+    }
+    nav a:hover::after, nav a.active::after{ width:100% }
+
+    /* Mobile Nav overlay */
+    .mobile-nav {
+      display:none;
+    }
+    .mobile-nav .nav-list{
+      position:fixed;
+      top:var(--header-h);
+      left:-100%;
+      width:100%;
+      height:calc(100vh - var(--header-h));
+      background:var(--dark);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:2.6rem;
+      transition:left .35s ease;
+      z-index:1100;
+      padding:2rem 1rem;
+    }
+    .mobile-nav .nav-list.show{ left:0; }
+    .mobile-nav .nav-list a{ font-size:1.45rem; color:#fff; }
+
+    /* Hero */
+    .hero{
+      min-height:calc(100vh - var(--header-h));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: calc(var(--header-h) + 1.25rem) var(--container-pad) 4rem;
+      background:
+        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        url('https://images.unsplash.com/photo-1626872895955-25ee50c3a3fe?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.1.0') center/cover no-repeat;
+      color:#fff;
+      text-align:center;
+    }
+    .hero-content{ max-width:900px }
+    .hero h1{
+      font-size:clamp(2rem,7.5vw,3.6rem);
+      margin-bottom:.8rem;
+      text-shadow:0 2px 10px rgba(0,0,0,0.45);
+      line-height:1.05;
+    }
+    .hero p{
+      font-size:clamp(1rem,3.8vw,1.25rem);
+      margin:1rem 0 1.6rem;
+      opacity:0.98;
+    }
+    .btn{
+      display:inline-block;
+      padding:12px 34px;
+      background:var(--accent);
+      color:#fff;
+      border-radius:50px;
+      font-weight:700;
+      font-size:clamp(0.95rem,2.4vw,1.05rem);
+      box-shadow:0 6px 18px rgba(245,158,11,0.28);
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .btn:hover{ transform:translateY(-4px); box-shadow:0 12px 28px rgba(245,158,11,0.36) }
+    .btn.btn-sm{ padding:9px 20px; font-size:.95rem }
+
+    /* Sections base */
+    section{ padding:64px var(--container-pad); scroll-margin-top: calc(var(--header-h) + 12px) }
+    .section-title{ text-align:center; font-size:clamp(1.6rem,4.5vw,2.6rem); margin-bottom:48px; color:var(--dark) }
+    .section-title span{ color:var(--accent) }
+
+    /* Services */
+    .services{ background:var(--light) }
+    .services-grid{
+      display:grid;
+      gap:28px;
+      max-width:var(--max-width);
+      margin:0 auto;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px,100%), 1fr));
+    }
+    .service-card{
+      background:#fff;
+      border-radius:var(--radius-lg);
+      padding:36px 22px;
+      text-align:center;
+      box-shadow:var(--shadow-lg);
+      transition:transform .35s ease;
+    }
+    .service-card:hover{ transform:translateY(-12px) }
+    .service-card i{ color:var(--primary); font-size:clamp(2.6rem,6vw,3.6rem); margin-bottom:14px }
+
+    /* About */
+    .about-content{
+      max-width:1200px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:1fr;
+      gap:34px;
+      align-items:center;
+    }
+    .about-text h3{ margin-bottom:10px; font-size:1.4rem; color:var(--dark) }
+    .about-text p{ color:#444 }
+    .about-list{ list-style:none; margin:20px 0 0; padding-left:0 }
+    .about-list li{ margin:12px 0; display:flex; align-items:center; gap:12px; color:#333 }
+    .about-list i{ color:var(--secondary) }
+
+    .about-img{
+      height:400px;
+      border-radius:var(--radius-lg);
+      background: url('https://images.unsplash.com/photo-1628155858736-bacadae33a88?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.1.0') center/cover no-repeat;
+      box-shadow:0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    /* Projects */
+    .projects-grid{
+      display:grid;
+      gap:26px;
+      max-width:var(--max-width);
+      margin:0 auto;
+      grid-template-columns: repeat(auto-fit, minmax(min(320px,100%),1fr));
+    }
+    .project-card{
+      background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow-lg);
+    }
+    .project-card img{ width:100%; height:220px; object-fit:cover }
+    .project-info{ padding:16px 18px }
+    .project-info h3{ font-size:1.05rem; margin-bottom:6px }
+    .project-info p{ color:var(--muted); font-size:.95rem }
+
+    /* Contact */
+    .contact{ background:var(--dark); color:#fff }
+    .contact-wrapper{
+      max-width:1100px; margin:0 auto;
+      display:grid; grid-template-columns:1fr; gap:36px; align-items:start;
+    }
+    .contact-block{ color:#fff }
+    .contact-block h3{ color:var(--accent); font-size:1.4rem; margin-bottom:8px }
+    .contact-block p{ font-size:1.02rem; margin-bottom:18px; color:#f3f4f6 }
+    .contact-methods{ margin-top:26px }
+    .contact-item{ display:flex; gap:14px; align-items:center; margin:14px 0 }
+    .contact-item i{ font-size:1.6rem; color:var(--accent) }
+    .whatsapp-primary{
+      display:inline-flex; align-items:center; gap:14px; padding:16px 28px;
+      border-radius:70px; font-weight:800; font-size:1rem; background:#25D366; color:#fff;
+      box-shadow:0 10px 30px rgba(37,211,102,0.28);
+    }
+    .contact-form{
+      background:#fff; color:#111; padding:22px; border-radius:12px; box-shadow:var(--shadow-lg)
+    }
+    .form-field{ width:100%; padding:12px 14px; border-radius:8px; border:1px solid #e6e6e6; margin:10px 0; font-size:1rem }
+
+    .contact-note{ text-align:center; margin-top:10px; color:#666; font-size:.92rem }
+
+    /* Footer */
+    footer{ background:#0b0b0b; color:#bfbfbf; text-align:center; padding:36px 14px; font-size:.95rem }
+
+    /* Floating WhatsApp */
+    .whatsapp-float{
+      position:fixed; right:20px; bottom:20px; width:64px; height:64px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center; background:#25D366; color:#fff;
+      font-size:1.6rem; box-shadow:0 6px 20px rgba(37,211,102,0.35); z-index:1400; transition:transform .14s ease;
+    }
+    .whatsapp-float:hover{ transform:scale(1.12) }
+
+    /* Utilities */
+    .container{ max-width:var(--max-width); margin:0 auto; padding:0 var(--container-pad) }
+
+    /* Larger screens */
+    @media (min-width:768px){
+      .menu-toggle{ display:none }
+      nav ul{ display:flex }
+      .mobile-nav{ display:none }
+
+      .about-content{ grid-template-columns: 1fr 1fr }
+      .about-img{ height:500px }
+
+      .contact-wrapper{ grid-template-columns: 1fr 1fr }
+      section{ padding:80px var(--container-pad) }
+      .hero{ padding: calc(var(--header-h) + 2rem) var(--container-pad) 6rem }
+    }
+
+    /* Tablet / mobile */
+    @media (max-width: 1024px){
+      :root{ --max-width:1100px }
+    }
+    @media (max-width: 768px){
+      .menu-toggle{ display:block }
+      nav ul{ display:none } /* hide desktop nav on mobile */
+      .mobile-nav{ display:block }
+
+      .hero{ padding-top: calc(var(--header-h) + 1rem) }
+
+      .about-img{ order:-1 } /* keep image above on small screens */
+      .about-content{ grid-template-columns: 1fr }
+      .contact-wrapper{ grid-template-columns: 1fr } /* on small phones: single column */
+      section{ padding:60px 4% }
+    }
+    @media (max-width:480px){
+      .hero h1{ font-size:2.2rem }
+      .hero p{ font-size:1rem; margin-bottom:1.1rem }
+      .project-card img{ height:180px }
+      .whatsapp-float{ width:56px; height:56px; font-size:1.45rem; right:14px; bottom:14px }
+      section{ padding:50px 4% }
+    }
+
+    /* Focus states for keyboard users */
+    a:focus, button:focus, input:focus, textarea:focus{
+      outline:3px solid rgba(30,64,175,0.12);
+      box-shadow:var(--shadow-focus);
+      outline-offset:2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="navbar">
+      <div class="logo">MarkPoint<span>Surveys</span></div>
+
+      <!-- Desktop nav -->
+      <nav aria-label="Primary navigation">
+        <ul id="nav-desktop">
+          <li><a href="#home" class="active">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Mobile menu toggle -->
+      <button class="menu-toggle" id="mobile-toggle" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- Mobile nav overlay -->
+    <div class="mobile-nav" id="mobile-menu" aria-hidden="true">
+      <nav class="nav-list" id="mobile-nav-list">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main>
+    <section class="hero" id="home" aria-label="Hero">
+      <div class="hero-content">
+        <h1>Professional Land Surveying <span>& Mapping</span> in Kenya</h1>
+        <p>Registered surveyors delivering accurate topographic, cadastral, drone & GIS services nationwide using latest technology.</p>
+        <a href="#contact" class="btn">Contact Us Today</a>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section class="services" id="services" aria-label="Services">
+      <h2 class="section-title">Our <span>Services</span></h2>
+      <div class="services-grid container">
+        <article class="service-card" aria-labelledby="s1">
+          <i class="fas fa-mountain" aria-hidden="true"></i>
+          <h3 id="s1">Topographic Surveys</h3>
+          <p>Detailed contour & elevation mapping for construction and planning.</p>
+          <a class="btn btn-sm" href="topographic-surveys.html">Learn more...</a>
+        </article>
+
+        <article class="service-card" aria-labelledby="s2">
+          <i class="fas fa-drafting-compass" aria-hidden="true"></i>
+          <h3 id="s2">Cadastral & Subdivision</h3>
+          <p>Boundary demarcation, beacon placement and land subdivision.</p>
+          <a class="btn btn-sm" href="cadastral-subdivisions.html">Learn more...</a>
+        </article>
+
+        <article class="service-card" aria-labelledby="s3">
+          <i class="fas fa-drone" aria-hidden="true"></i>
+          <h3 id="s3">Drone Aerial Survey</h3>
+          <p>High-resolution orthophotos & 3D models for large areas.</p>
+          <a class="btn btn-sm" href="drone-surveys.html">Learn more...</a>
+        </article>
+
+        <article class="service-card" aria-labelledby="s4">
+          <i class="fas fa-map" aria-hidden="true"></i>
+          <h3 id="s4">GIS & Digital Mapping</h3>
+          <p>Geospatial analysis and interactive mapping solutions.</p>
+          <a class="btn btn-sm" href="gis-digital-mapping.html">Learn more...</a>
+        </article>
+
+        <article class="service-card" aria-labelledby="s5">
+          <i class="fas fa-file-contract" aria-hidden="true"></i>
+          <h3 id="s5">Land Title Surveys</h3>
+          <p>Surveys for title deeds, mutations, transfers & amalgamation.</p>
+          <a class="btn btn-sm" href="land-title-surveys.html">Learn more...</a>
+        </article>
+
+        <article class="service-card" aria-labelledby="s6">
+          <i class="fas fa-hard-hat" aria-hidden="true"></i>
+          <h3 id="s6">Engineering Surveys</h3>
+          <p>Setting out for roads, buildings, dams and infrastructure.</p>
+          <a class="btn btn-sm" href="engineering-surveys.html">Learn more...</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="about" id="about" aria-label="About">
+      <h2 class="section-title">Why Choose <span>MarkPoint</span>?</h2>
+      <div class="about-content">
+        <div class="about-text">
+          <h3>Registered & Trusted Surveyors in Kenya</h3>
+          <p>With over 10 years of experience, we are fully licensed by the Land Surveyors Board of Kenya and use the latest GNSS, Total Stations, and drone technology.</p>
+
+          <ul class="about-list" aria-hidden="false">
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Registered with Institution of Surveyors of Kenya (ISK)</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Nationwide coverage – from Nairobi to rural areas</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Fast turnaround & competitive pricing</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> 100% compliance with Kenyan survey regulations</li>
+          </ul>
+
+          <div style="margin-top:18px;">
+            <a href="#contact" class="btn">Contact Us Today</a>
+            <a href="about-us.html" class="btn btn-sm" style="background:var(--primary); margin-left:12px;">More About Us...</a>
+          </div>
+        </div>
+
+        <div class="about-img" role="img" aria-label="Survey team in the field"></div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="projects" id="projects" aria-label="Projects">
+      <h2 class="section-title">Our Recent <span>Projects</span></h2>
+      <div class="projects-grid container">
+        <div class="project-card">
+          <img src="https://images.unsplash.com/photo-1628158088936-68ccaaa400dc?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.1.0" alt="Topographic Survey Nairobi">
+          <div class="project-info">
+            <h3>Topographic Survey – Kitsuru, Nairobi County</h3>
+            <p>5-acre for proposed change of use</p>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <img src="https://images.unsplash.com/photo-1640082096006-00b8a7dcf4c1?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.1.0" alt="Drone Survey Kisumu">
+          <div class="project-info">
+            <h3>Drone Mapping – Rusinga Island, Homabay County</h3>
+            <p>30km ring-road construction project</p>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <img src="https://media.istockphoto.com/id/1320071761/photo/land-plot-in-aerial-view-for-development-or-investment.jpg?s=1024x1024&w=is&k=20&c=99Wx1xyhEg_PWdSDaBJuAH0eS7hLe5HcyEc_zygzRbE=" alt="Subdivision Mombasa">
+          <div class="project-info">
+            <h3>Land Subdivision – Katani, Machakos County</h3>
+            <p>330 parcels with title processing</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact" id="contact" aria-label="Contact">
+      <h2 class="section-title">Get In <span>Get In Touch</span></h2>
+
+      <div class="contact-wrapper">
+        <!-- Left: Contact Info + WhatsApp -->
+        <div class="contact-block">
+          <h3>Talk to Us on WhatsApp</h3>
+          <p>Most clients prefer instant chat. Click below and start talking to a registered surveyor right now!</p>
+
+          <p>
+            <a class="whatsapp-primary" href="https://wa.me/254715070948?text=Hello%20MarkPoint%20Surveys%2C%20I%20need%20help%20with%20land%20surveying%20in%20Kenya%20%E2%9C%8D" target="_blank" rel="noopener">
+              <i class="fab fa-whatsapp" aria-hidden="true" style="font-size:1.55rem;"></i>
+              <span style="display:block;text-align:left;">
+                <strong style="display:block;">Chat on WhatsApp</strong>
+                <small style="display:block;opacity:.95;">+254 715 070 948</small>
+              </span>
+            </a>
+          </p>
+
+          <div class="contact-methods">
+            <div class="contact-item"><i class="fas fa-phone" aria-hidden="true"></i><div><strong>Call:</strong> <a href="tel:+254715070948" style="color:#fff">+254 715 070 948</a></div></div>
+            <div class="contact-item"><i class="fas fa-envelope" aria-hidden="true"></i><div><strong>Email:</strong> <a href="mailto:kalvincaranjah@gmail.com" style="color:#fff">kalvincaranjah@gmail.com</a></div></div>
+            <div class="contact-item"><i class="fas fa-map-marker-alt" aria-hidden="true"></i><div><strong>Location:</strong> Nairobi, Kenya</div></div>
+          </div>
+        </div>
+
+        <!-- Right: Email Form -->
+        <div class="contact-form" aria-hidden="false">
+          <h3 style="text-align:center;color:var(--dark);margin-bottom:12px;">Or Send Us an Email</h3>
+          <form action="https://formspree.io/f/mpwkeqow" method="POST" novalidate>
+            <input class="form-field" type="text" name="name" placeholder="Your Name" required>
+            <input class="form-field" type="email" name="email" placeholder="Your Email" required>
+            <input class="form-field" type="text" name="phone" placeholder="Your Phone (optional)">
+            <textarea class="form-field" name="message" rows="6" placeholder="Your Message" required></textarea>
+            <button type="submit" class="btn" style="width:100%; padding:14px 16px;">Send Email Message</button>
+          </form>
+          <p class="contact-note">We reply to emails within 1 business day</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 MarkPoint Surveys Limited. All Rights Reserved. | Registered Land Surveyors in Kenya</p>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Button (single unified button) -->
+  <a class="whatsapp-float" href="https://wa.me/254715070948?text=Hello%20MarkPoint%20Surveys%2C%20I'm%20requesting%20assistance%20with%20land%20surveying%20services%20for%20my%20property.%20Kindly%20guide%20me%20on..." target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <i class="fab fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <script>
+    /* Mobile menu toggle */
+    const toggleBtn = document.getElementById('mobile-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileNavList = document.getElementById('mobile-nav-list');
+    const mobileIcon = toggleBtn.querySelector('i');
+
+    function setMobileState(open) {
+      if (open) {
+        mobileNavList.classList.add('show');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        mobileMenu.setAttribute('aria-hidden', 'false');
+        mobileIcon.classList.remove('fa-bars');
+        mobileIcon.classList.add('fa-times');
+        document.body.style.overflow = 'hidden'; // prevent background scroll when menu open
+      } else {
+        mobileNavList.classList.remove('show');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+        mobileIcon.classList.remove('fa-times');
+        mobileIcon.classList.add('fa-bars');
+        document.body.style.overflow = ''; 
+      }
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      const expanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      setMobileState(!expanded);
+    });
+
+    // Close mobile menu when a link is clicked
+    mobileNavList.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => setMobileState(false));
+    });
+
+    // Desktop nav active highlight on scroll
+    const sections = document.querySelectorAll('main section[id]');
+    const navLinks = document.querySelectorAll('#nav-desktop a');
+
+    function throttle(fn, wait = 100){
+      let last = 0;
+      return (...args) => {
+        const now = Date.now();
+        if (now - last >= wait) { last = now; fn(...args); }
+      };
+    }
+
+    function refreshActiveLink(){
+      const top = window.scrollY + (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 72) + 6;
+      sections.forEach(sec => {
+        const id = sec.id;
+        const offsetTop = sec.offsetTop;
+        const height = sec.offsetHeight;
+        const link = document.querySelector(`#nav-desktop a[href="#${id}"]`);
+        if (!link) return;
+        if (top >= offsetTop && top < offsetTop + height) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', throttle(refreshActiveLink, 120));
+    window.addEventListener('load', refreshActiveLink);
+
+    // Smooth scroll for all internal anchors (accounts for fixed header via CSS scroll-margin-top)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e){
+        const target = document.querySelector(this.getAttribute('href'));
+        if (!target) return;
+        e.preventDefault();
+        setMobileState(false); // close mobile menu if open
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+  </html> 
